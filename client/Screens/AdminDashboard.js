@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, StatusBar, Platform, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, StatusBar, Platform, ScrollView, Image, TouchableOpacity, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import {KeyboardAvoidingView} from 'react-native';
 import axios from 'axios';
@@ -8,8 +8,7 @@ import { Avatar, Card, IconButton } from 'react-native-paper';
 export default function AdminDashboard({navigation, route}) {
   
   const [users,setUsers] = useState([])
-
-
+  const [isSorted, setIsSorted] = useState(true)
   
 
 
@@ -45,6 +44,39 @@ export default function AdminDashboard({navigation, route}) {
     }
   }
 
+  const sortAscUsers = () => {
+    const newUsers = [...users]
+    newUsers.sort((a,b) => {
+      if(a.username > b.username)
+      {
+        return -1;
+      }
+      if(a.username < b.username)
+      {
+        return 1
+      }
+      return 0;
+    })
+    setUsers(newUsers)
+    setIsSorted(false)
+  }
+
+  const sortDescUsers = () => {
+    const newUsers = [...users]
+    newUsers.sort((a,b) => {
+      if(a.username > b.username)
+      {
+        return 1;
+      }
+      if(a.username < b.username)
+      {
+        return -1
+      }
+      return 0;
+    })
+    setUsers(newUsers)
+    setIsSorted(true)
+  }
   
 const MyComponent = ({users}) => (
  <>
@@ -100,6 +132,15 @@ const MyComponent = ({users}) => (
     <ScrollView>
     <View style={styles.container} horizontal>
        <Text style={styles.text}>Admin Profile</Text>
+
+       <TouchableOpacity 
+       style={{backgroundColor: '#03a1fc',margin: 10, padding: 5, borderRadius: 30}} 
+       onPress={() => isSorted ? sortAscUsers() : sortDescUsers()}
+       >
+        <Text style={{fontSize: 15, color: 'white'}}>
+          {isSorted ? <Text>Sort Users ⬇️</Text> : <Text>Sort Users ⬆️</Text>}
+          </Text>
+       </TouchableOpacity>
       
     </View>
     <MyComponent users={users}/>
